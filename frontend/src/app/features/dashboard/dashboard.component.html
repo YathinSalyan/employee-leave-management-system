@@ -1,0 +1,109 @@
+<div class="page">
+  <h1>Welcome back, {{ authService.username() }}</h1>
+
+  @if (loading()) {
+    <p class="status">Loading…</p>
+  } @else {
+    @if (errorMessage()) {
+      <p class="status error">{{ errorMessage() }}</p>
+    }
+
+    @if (role === 'Admin') {
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-value">{{ totalEmployees() }}</span>
+          <span class="stat-label">Total employees</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ totalDepartments() }}</span>
+          <span class="stat-label">Total departments</span>
+        </div>
+        <div class="stat-card pending">
+          <span class="stat-value">{{ pendingCount() }}</span>
+          <span class="stat-label">Pending leave requests</span>
+        </div>
+        <div class="stat-card approved">
+          <span class="stat-value">{{ approvedCount() }}</span>
+          <span class="stat-label">Approved leaves</span>
+        </div>
+        <div class="stat-card rejected">
+          <span class="stat-value">{{ rejectedCount() }}</span>
+          <span class="stat-label">Rejected leaves</span>
+        </div>
+      </div>
+    }
+
+    @if (role === 'Manager') {
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-value">{{ teamSize() }}</span>
+          <span class="stat-label">Team size</span>
+        </div>
+        <div class="stat-card pending">
+          <span class="stat-value">{{ pendingCount() }}</span>
+          <span class="stat-label">Pending requests</span>
+        </div>
+        <div class="stat-card approved">
+          <span class="stat-value">{{ approvedCount() }}</span>
+          <span class="stat-label">Approved requests</span>
+        </div>
+        <div class="stat-card rejected">
+          <span class="stat-value">{{ rejectedCount() }}</span>
+          <span class="stat-label">Rejected requests</span>
+        </div>
+      </div>
+    }
+
+    @if (role === 'Employee') {
+      @if (profile(); as p) {
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value">{{ p.annualLeaveEntitlement }}</span>
+            <span class="stat-label">Total leave (days)</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">{{ p.usedLeaveDays }}</span>
+            <span class="stat-label">Used leave (days)</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">{{ p.remainingLeaveDays }}</span>
+            <span class="stat-label">Remaining leave (days)</span>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <h2>My profile</h2>
+          <dl>
+            <dt>Designation</dt>
+            <dd>{{ p.designation }}</dd>
+            <dt>Department</dt>
+            <dd>{{ p.departmentName || '—' }}</dd>
+            <dt>Manager</dt>
+            <dd>{{ p.managerName || '—' }}</dd>
+            <dt>Date of joining</dt>
+            <dd>{{ p.dateOfJoining | date: 'mediumDate' }}</dd>
+          </dl>
+        </div>
+      }
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-value">{{ totalCount() }}</span>
+          <span class="stat-label">Total leave requests</span>
+        </div>
+        <div class="stat-card pending">
+          <span class="stat-value">{{ pendingCount() }}</span>
+          <span class="stat-label">Pending</span>
+        </div>
+        <div class="stat-card approved">
+          <span class="stat-value">{{ approvedCount() }}</span>
+          <span class="stat-label">Approved</span>
+        </div>
+        <div class="stat-card rejected">
+          <span class="stat-value">{{ rejectedCount() }}</span>
+          <span class="stat-label">Rejected</span>
+        </div>
+      </div>
+    }
+  }
+</div>
