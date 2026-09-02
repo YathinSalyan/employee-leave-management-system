@@ -1,0 +1,14 @@
+# Build artifacts
+bin/
+obj/
+node_modules/
+dist/
+.angular/
+
+# Editor / OS
+*.user
+.vs/
+.DS_Store
+
+# Logs
+npm-debug.log*
