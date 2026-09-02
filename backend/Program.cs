@@ -100,20 +100,23 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+// This is a portfolio/demo project — Swagger stays available in every
+// environment (letting anyone explore the live API is a feature here, not a
+// risk), and the seeder always runs so the deployed version has the same
+// demo accounts (admin / manager1 / yathin) ready to log into immediately.
+// DbSeeder itself is a no-op once Users already exist, so this is safe to
+// run on every startup, including every redeploy.
+app.UseSwagger();
+app.UseSwaggerUI();
 
-    using var scope = app.Services.CreateScope();
+using (var scope = app.Services.CreateScope())
+{
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await DbSeeder.SeedAsync(db);
 }
 
 // Exception middleware sits first so it can catch anything thrown further down the pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseHttpsRedirection();
 
 app.UseCors("AngularClient");
 
