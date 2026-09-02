@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- Database ---
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // --- Services (all Scoped: they depend on the per-request DbContext) ---
 builder.Services.AddScoped<IAuthService, AuthService>();
