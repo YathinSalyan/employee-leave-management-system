@@ -1,0 +1,157 @@
+<div class="page">
+  <a routerLink="/employees" class="back-link">← Back to employees</a>
+
+  <h1>{{ isEditMode ? 'Edit employee' : 'Add employee' }}</h1>
+
+  @if (loading()) {
+    <p class="status">Loading…</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field-row">
+        <div class="field">
+          <label for="firstName">First name</label>
+          <input id="firstName" type="text" formControlName="firstName" [class.invalid]="isInvalid('firstName')" />
+          @if (isInvalid('firstName')) {
+            <span class="field-error">{{ errorFor('firstName') }}</span>
+          }
+        </div>
+        <div class="field">
+          <label for="lastName">Last name</label>
+          <input id="lastName" type="text" formControlName="lastName" [class.invalid]="isInvalid('lastName')" />
+          @if (isInvalid('lastName')) {
+            <span class="field-error">{{ errorFor('lastName') }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" [class.invalid]="isInvalid('email')" />
+        @if (isInvalid('email')) {
+          <span class="field-error">{{ errorFor('email') }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input id="phone" type="tel" formControlName="phone" />
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="dateOfBirth">Date of birth</label>
+          <input id="dateOfBirth" type="date" formControlName="dateOfBirth" [class.invalid]="isInvalid('dateOfBirth')" />
+          @if (isInvalid('dateOfBirth')) {
+            <span class="field-error">{{ errorFor('dateOfBirth') }}</span>
+          }
+        </div>
+        <div class="field">
+          <label for="dateOfJoining">Date of joining</label>
+          <input id="dateOfJoining" type="date" formControlName="dateOfJoining" [class.invalid]="isInvalid('dateOfJoining')" />
+          @if (isInvalid('dateOfJoining')) {
+            <span class="field-error">{{ errorFor('dateOfJoining') }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="designation">Designation</label>
+        <input id="designation" type="text" formControlName="designation" [class.invalid]="isInvalid('designation')" />
+        @if (isInvalid('designation')) {
+          <span class="field-error">{{ errorFor('designation') }}</span>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="salary">Salary</label>
+          <input id="salary" type="number" min="0" formControlName="salary" [class.invalid]="isInvalid('salary')" />
+          @if (isInvalid('salary')) {
+            <span class="field-error">{{ errorFor('salary') }}</span>
+          }
+        </div>
+        <div class="field">
+          <label for="annualLeaveEntitlement">Annual leave entitlement (days)</label>
+          <input
+            id="annualLeaveEntitlement"
+            type="number"
+            min="0"
+            formControlName="annualLeaveEntitlement"
+            [class.invalid]="isInvalid('annualLeaveEntitlement')"
+          />
+          @if (isInvalid('annualLeaveEntitlement')) {
+            <span class="field-error">{{ errorFor('annualLeaveEntitlement') }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="departmentId">Department</label>
+          <select id="departmentId" formControlName="departmentId" [class.invalid]="isInvalid('departmentId')">
+            <option [ngValue]="null">Select a department</option>
+            @for (department of departments(); track department.id) {
+              <option [ngValue]="department.id">{{ department.name }}</option>
+            }
+          </select>
+          @if (isInvalid('departmentId')) {
+            <span class="field-error">{{ errorFor('departmentId') }}</span>
+          }
+        </div>
+        <div class="field">
+          <label for="managerId">Manager</label>
+          <select id="managerId" formControlName="managerId">
+            <option [ngValue]="null">No manager</option>
+            @for (manager of potentialManagers(); track manager.id) {
+              <option [ngValue]="manager.id">{{ manager.firstName }} {{ manager.lastName }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      @if (!isEditMode) {
+        <hr />
+        <p class="section-label">Login account</p>
+
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" type="text" formControlName="username" autocomplete="off" [class.invalid]="isInvalid('username')" />
+          @if (isInvalid('username')) {
+            <span class="field-error">{{ errorFor('username') }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            autocomplete="new-password"
+            [class.invalid]="isInvalid('password')"
+          />
+          @if (isInvalid('password')) {
+            <span class="field-error">{{ errorFor('password') }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="role">Role</label>
+          <select id="role" formControlName="role">
+            <option value="Employee">Employee</option>
+            <option value="Manager">Manager</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <p class="status error">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : (isEditMode ? 'Save changes' : 'Add employee') }}
+      </button>
+    </form>
+  }
+</div>

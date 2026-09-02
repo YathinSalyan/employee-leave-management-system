@@ -1,0 +1,94 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>Employees</h1>
+      <p class="subtitle">{{ filteredSorted().length }} of {{ employees().length }}</p>
+    </div>
+    <a routerLink="/employees/add" class="btn-primary">Add employee</a>
+  </header>
+
+  @if (!loading() && !errorMessage() && employees().length > 0) {
+    <div class="toolbar">
+      <input
+        type="text"
+        placeholder="Search by name or email…"
+        [value]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+      <select (change)="onDepartmentFilterChange($any($event.target).value)">
+        <option value="">All departments</option>
+        @for (department of departments(); track department.id) {
+          <option [value]="department.id">{{ department.name }}</option>
+        }
+      </select>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="status">Loading employees…</p>
+  } @else if (errorMessage()) {
+    <p class="status error">{{ errorMessage() }}</p>
+  } @else if (employees().length === 0) {
+    <div class="empty-state">
+      <p>No employees yet.</p>
+      <a routerLink="/employees/add" class="btn-primary">Add your first employee</a>
+    </div>
+  } @else if (filteredSorted().length === 0) {
+    <div class="empty-state">
+      <p>No employees match your search.</p>
+    </div>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th class="sortable" (click)="setSort('name')">
+            Name {{ sortField() === 'name' ? (sortDir() === 'asc' ? '↑' : '↓') : '' }}
+          </th>
+          <th>Email</th>
+          <th class="sortable" (click)="setSort('department')">
+            Department {{ sortField() === 'department' ? (sortDir() === 'asc' ? '↑' : '↓') : '' }}
+          </th>
+          <th class="sortable" (click)="setSort('designation')">
+            Designation {{ sortField() === 'designation' ? (sortDir() === 'asc' ? '↑' : '↓') : '' }}
+          </th>
+          <th>Manager</th>
+          <th class="sortable" (click)="setSort('leave')">
+            Leave (used / total) {{ sortField() === 'leave' ? (sortDir() === 'asc' ? '↑' : '↓') : '' }}
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (employee of pagedEmployees(); track employee.id) {
+          <tr>
+            <td>{{ employee.firstName }} {{ employee.lastName }}</td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.departmentName || '—' }}</td>
+            <td>{{ employee.designation }}</td>
+            <td>{{ employee.managerName || '—' }}</td>
+            <td>{{ employee.usedLeaveDays }} / {{ employee.annualLeaveEntitlement }}</td>
+            <td class="actions">
+              <a [routerLink]="['/employees/edit', employee.id]">Edit</a>
+              <button
+                type="button"
+                class="link-danger"
+                [disabled]="deletingId() === employee.id"
+                (click)="remove(employee)"
+              >
+                {{ deletingId() === employee.id ? 'Removing…' : 'Remove' }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (totalPages() > 1) {
+      <div class="pagination">
+        <button type="button" [disabled]="page() === 1" (click)="goToPage(page() - 1)">Previous</button>
+        <span>Page {{ page() }} of {{ totalPages() }}</span>
+        <button type="button" [disabled]="page() === totalPages()" (click)="goToPage(page() + 1)">Next</button>
+      </div>
+    }
+  }
+</div>
