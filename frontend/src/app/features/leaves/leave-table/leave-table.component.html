@@ -1,0 +1,75 @@
+@if (leaves.length === 0) {
+  <p class="empty">{{ emptyMessage }}</p>
+} @else {
+  <table>
+    <thead>
+      <tr>
+        @if (showEmployeeColumn) {
+          <th>Employee</th>
+        }
+        <th>Type</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Days</th>
+        <th>Reason</th>
+        <th>Status</th>
+        <th>Approved by</th>
+        @if (mode !== 'none') {
+          <th></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (leave of leaves; track leave.id) {
+        <tr>
+          @if (showEmployeeColumn) {
+            <td>{{ leave.employeeName || '—' }}</td>
+          }
+          <td>{{ leave.leaveType }}</td>
+          <td>{{ leave.startDate | date: 'mediumDate' }}</td>
+          <td>{{ leave.endDate | date: 'mediumDate' }}</td>
+          <td>{{ leave.durationInDays }}</td>
+          <td class="reason">{{ leave.reason || '—' }}</td>
+          <td>
+            <span class="badge" [ngClass]="'badge-' + leave.status.toLowerCase()">{{ leave.status }}</span>
+          </td>
+          <td>{{ leave.approvedByName || '—' }}</td>
+          @if (mode !== 'none') {
+            <td class="actions">
+              @if (leave.status === 'Pending') {
+                @if (mode === 'cancel') {
+                  <button
+                    type="button"
+                    class="link-danger"
+                    [disabled]="actioningId === leave.id"
+                    (click)="cancel.emit(leave)"
+                  >
+                    {{ actioningId === leave.id ? 'Cancelling…' : 'Cancel' }}
+                  </button>
+                }
+                @if (mode === 'approveReject') {
+                  <button
+                    type="button"
+                    class="link-approve"
+                    [disabled]="actioningId === leave.id"
+                    (click)="approve.emit(leave)"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    class="link-danger"
+                    [disabled]="actioningId === leave.id"
+                    (click)="reject.emit(leave)"
+                  >
+                    Reject
+                  </button>
+                }
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+}

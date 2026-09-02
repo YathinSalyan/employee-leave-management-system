@@ -1,0 +1,46 @@
+<div class="page">
+  <a routerLink="/leaves" class="back-link">← Back to leave requests</a>
+
+  <h1>Apply for leave</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="leaveType">Leave type</label>
+      <select id="leaveType" formControlName="leaveType">
+        <option value="Casual">Casual</option>
+        <option value="Sick">Sick</option>
+        <option value="Vacation">Vacation</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="startDate">Start date</label>
+        <input id="startDate" type="date" formControlName="startDate" [class.invalid]="isInvalid('startDate')" />
+        @if (isInvalid('startDate')) {
+          <span class="field-error">{{ errorFor('startDate') }}</span>
+        }
+      </div>
+      <div class="field">
+        <label for="endDate">End date</label>
+        <input id="endDate" type="date" formControlName="endDate" [class.invalid]="isInvalid('endDate')" />
+        @if (isInvalid('endDate')) {
+          <span class="field-error">{{ errorFor('endDate') }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="reason">Reason</label>
+      <textarea id="reason" formControlName="reason" rows="3"></textarea>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="status error">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" class="btn-primary" [disabled]="saving()">
+      {{ saving() ? 'Submitting…' : 'Submit request' }}
+    </button>
+  </form>
+</div>

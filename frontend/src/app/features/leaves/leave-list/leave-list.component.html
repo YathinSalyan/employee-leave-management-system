@@ -1,0 +1,51 @@
+<div class="page">
+  <header class="page-header">
+    <h1>Leave requests</h1>
+    @if (canApply) {
+      <a routerLink="/leaves/apply" class="btn-primary">Apply for leave</a>
+    }
+  </header>
+
+  @if (loading()) {
+    <p class="status">Loading…</p>
+  } @else if (errorMessage()) {
+    <p class="status error">{{ errorMessage() }}</p>
+  } @else if (isManager) {
+    <section>
+      <h2>My requests</h2>
+      <app-leave-table
+        [leaves]="myRequests()"
+        mode="cancel"
+        emptyMessage="You haven't applied for any leave yet."
+        [actioningId]="actioningId()"
+        (cancel)="cancelRequest($event)"
+      />
+    </section>
+
+    <section>
+      <h2>Team requests</h2>
+      <app-leave-table
+        [leaves]="teamRequests()"
+        [showEmployeeColumn]="true"
+        mode="approveReject"
+        emptyMessage="No requests from your team."
+        [actioningId]="actioningId()"
+        (approve)="approveRequest($event)"
+        (reject)="rejectRequest($event)"
+      />
+    </section>
+  } @else {
+    <section>
+      <app-leave-table
+        [leaves]="mainList()"
+        [showEmployeeColumn]="role !== 'Employee'"
+        [mode]="role === 'Admin' ? 'approveReject' : 'cancel'"
+        emptyMessage="No leave requests yet."
+        [actioningId]="actioningId()"
+        (cancel)="cancelRequest($event)"
+        (approve)="approveRequest($event)"
+        (reject)="rejectRequest($event)"
+      />
+    </section>
+  }
+</div>
