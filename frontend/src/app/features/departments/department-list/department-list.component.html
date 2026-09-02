@@ -1,0 +1,51 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>Departments</h1>
+      <p class="subtitle">{{ departments().length }} total</p>
+    </div>
+    <a routerLink="/departments/add" class="btn-primary">Add department</a>
+  </header>
+
+  @if (loading()) {
+    <p class="status">Loading departments…</p>
+  } @else if (errorMessage()) {
+    <p class="status error">{{ errorMessage() }}</p>
+  } @else if (departments().length === 0) {
+    <div class="empty-state">
+      <p>No departments yet.</p>
+      <a routerLink="/departments/add" class="btn-primary">Add your first department</a>
+    </div>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Employees</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (department of departments(); track department.id) {
+          <tr>
+            <td>{{ department.name }}</td>
+            <td>{{ department.description || '—' }}</td>
+            <td>{{ department.employeeCount }}</td>
+            <td class="actions">
+              <a [routerLink]="['/departments/edit', department.id]">Edit</a>
+              <button
+                type="button"
+                class="link-danger"
+                [disabled]="deletingId() === department.id"
+                (click)="remove(department)"
+              >
+                {{ deletingId() === department.id ? 'Removing…' : 'Remove' }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

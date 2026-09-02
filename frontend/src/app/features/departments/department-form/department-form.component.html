@@ -1,0 +1,32 @@
+<div class="page">
+  <a routerLink="/departments" class="back-link">← Back to departments</a>
+
+  <h1>{{ isEditMode ? 'Edit department' : 'Add department' }}</h1>
+
+  @if (loading()) {
+    <p class="status">Loading…</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" type="text" formControlName="name" [class.invalid]="isInvalid('name')" />
+        @if (isInvalid('name')) {
+          <span class="field-error">{{ errorFor('name') }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" rows="3"></textarea>
+      </div>
+
+      @if (errorMessage()) {
+        <p class="status error">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : (isEditMode ? 'Save changes' : 'Add department') }}
+      </button>
+    </form>
+  }
+</div>
